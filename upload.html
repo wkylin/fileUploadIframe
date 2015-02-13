@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+    <style>
+        iframe{
+            display: none;
+        }
+    </style>
+</head>
+<body>
+<iframe id="J_frame" src="#" name="fileFrame" frameborder="1"></iframe>
+<form id="J_form" action="files.txt" method="post" enctype="multipart/form-data" target="fileFrame">
+    <input id="fileInput" type="file" />
+</form>
+<script type="text/javascript" src="jquery-1.8.2.min.js"></script>
+<script type="text/javascript">
+    $(document).ready(function(){
+        $("#fileInput").on("change",function(){
+            $("#J_form").submit();
+            jQuery('#J_frame').on("load",function(){
+
+                var io = document.getElementById("J_frame");
+                var xml={},tem;
+
+                if (io.contentWindow) {
+                    xml.responseText = io.contentWindow.document.body ? io.contentWindow.document.body.innerHTML : null;
+                } else if (io.contentDocument) {
+                    xml.responseText = io.contentDocument.document.body ? io.contentDocument.document.body.innerHTML : null;
+                }
+                tem = uploadData(xml, "text");
+                alert(tem.name);
+            });
+        });
+        function uploadData(r, type) {
+            var start, end;
+            var data = !type;
+            if (!type){
+                data = r.responseText;
+            }
+
+            if (type == "text") {
+                data = r.responseText;
+                start = data.indexOf(">");
+                if (start != -1) {
+                    end = data.indexOf("<", start + 1);
+                    if (end != -1) {
+                        data = data.substring(start + 1, end);
+                    }
+                }
+            }
+            return $.parseJSON($.trim(data));
+        }
+    });
+</script>
+</body>
+</html>
